@@ -1,4 +1,4 @@
-package com.rsi.fhir.dto;
+package com.rsi.fhirPOC.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

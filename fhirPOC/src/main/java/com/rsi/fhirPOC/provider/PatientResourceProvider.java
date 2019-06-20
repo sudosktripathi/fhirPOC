@@ -1,5 +1,7 @@
 package com.rsi.fhirPOC.provider;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.hl7.fhir.dstu3.model.HumanName;
@@ -15,6 +17,7 @@ import ca.uhn.fhir.rest.annotation.Delete;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
+import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 
@@ -30,6 +33,7 @@ public class PatientResourceProvider extends AbstractJaxRsResourceProvider<Patie
 
 	/** The Constant patients. */
 	private static final ConcurrentHashMap<String, Patient> patients = new ConcurrentHashMap<>();
+	private static final List<Patient> patientList = new ArrayList<> ();
 
 	static {
 		patients.put("123", createPatient("Van Houte"));
@@ -57,6 +61,13 @@ public class PatientResourceProvider extends AbstractJaxRsResourceProvider<Patie
 		return patients.get("123");
 
 	}
+	
+	@Search
+	public List<Patient> find() {
+        // Find the data from DB and return
+		return patientList;
+
+	}
 
 	/**
 	 * Creates the patient.
@@ -68,14 +79,15 @@ public class PatientResourceProvider extends AbstractJaxRsResourceProvider<Patie
 	@Create
 	public MethodOutcome createPatient(@ResourceParam Patient patient) throws Exception {
 		//Save the data in DB
+		System.out.println("patient@@"+patient.getGender());
 		patient.setId(createId(counter, 1L));
+		patientList.add(patient);
 		patients.put(String.valueOf(counter), patient);
 		MethodOutcome methodOutcome = new MethodOutcome();
 		methodOutcome.setId(new IdType("Patient", "3746", "1"));
 		methodOutcome.setResource(patient);
 		OperationOutcome outcome = new OperationOutcome();
-
-		methodOutcome.setOperationOutcome(outcome);
+        methodOutcome.setOperationOutcome(outcome);
 		return methodOutcome;
 	}
 
