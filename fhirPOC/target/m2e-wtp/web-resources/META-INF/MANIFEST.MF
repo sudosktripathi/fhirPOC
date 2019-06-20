@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: fhirPOC
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: Himanshu.Dixit
+Implementation-Vendor-Id: com.rsi
+Build-Jdk: 1.8.0_181
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/fhirPOC
+Created-By: Maven Integration for Eclipse
+

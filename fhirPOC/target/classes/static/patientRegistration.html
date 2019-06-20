@@ -1,0 +1,260 @@
+<!doctype html>
+<html>
+    <head>
+        <style type="text/css">
+
+            body {font-family:Arial, Sans-Serif;}
+
+            #container {width:300px; margin:0 auto;}
+
+            /* Nicely lines up the labels. */
+            form label {display:inline-block; width:140px;}
+
+            /* You could add a class to all the input boxes instead, if you like. That would be safer, and more backwards-compatible */
+            form input[type="text"],
+            form input[type="password"],
+            form input[type="email"] {width:160px;}
+
+            form .line {clear:both;}
+            form .line.submit {text-align:right;}
+            
+         
+
+
+.form-group {
+  margin: 30px auto;
+  width: 450px;
+}
+
+.form-control {
+  float: left;
+}
+
+#inputAddress {
+  width: 100%;
+}
+
+#inputCity {
+  width: 50%;
+}
+
+#inputState {
+  width: 15%;
+}
+
+#inputZip {
+  width: 28%;
+}
+
+
+#inputCounty {
+  width: 45%;
+}
+
+#inputCountry {
+  width: 50%;
+}
+
+        </style>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    </head>
+    <body>
+        <div id="container">
+            <form name="patientForm" id = "patientForm">
+                <h1>Create Patient</h1>
+                
+                <div class="line"><label for="surname">Surname: </label><input type="text" id="surname" /></div>
+                <!-- You may want to consider adding a "confirm" password box also -->
+                <div class="line"><label for="firstname">First Name: </label><input type="text" id="firstName" /></div>
+                <div class="line"><label for="prefix">Prefix: </label><input type="text" id="prefix" /></div>
+                <div class="line"><label for="gender">Gender: </label><input type="text" id="gender" /></div>
+                <div class="line"><label for="dob">Date of Birth: </label><input type="text" id="dob" /></div>
+                <div class="line"><label for="dob">Mobile No: </label><input type="text" id="phoneNumber" /></div>
+                
+       Address:         
+<div class="form-group">
+
+  <input type="text" 
+         class="form-control" 
+         id="inputAddress" 
+         placeholder="Address">
+  
+  <input type="text" 
+         class="form-control" 
+         id="inputCity" 
+         placeholder="City">
+  
+  <input type="text" 
+         class="form-control" 
+         id="inputState" 
+         placeholder="State">
+  
+  <input type="text" 
+         class="form-control" 
+         id="inputZip" 
+         placeholder="Zip">
+  
+  
+  
+  <input type="text" 
+         class="form-control" 
+         id="inputCountry" 
+         placeholder="Country">
+</div>
+
+             <div class="line"><br><input type="button" value="Submit" id="button"/><br><br>
+                   <table border="1" id = "thetable">
+<tr>
+<th>Last Name</th>
+<th>First Name</th>
+
+<th>Gender</th>
+<th>DOB</th>
+<th>Mobile Number</th>
+</tr>
+
+</table>
+             </div>   
+            </form>
+        </div>
+    
+        <script>
+        $(document).ready(function() {
+            $("#button").click(function(){
+            	$.ajax({
+            	    url: 'http://localhost:8080/fhirPOC/fhir/Patient',
+            	    dataType: 'json',
+            	    type: 'post',
+            	    async : false,
+            	    contentType: 'application/json',
+            	    data: JSON.stringify( {
+            	    	  "resourceType": "Patient",
+            	    	  "id": "example",
+            	    	  "identifier": [
+            	    	    {
+            	    	      "use": "usual",
+            	    	      "type": {
+            	    	        "coding": [
+            	    	          {
+            	    	            "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+            	    	            "code": $('#prefix').val()
+            	    	          }
+            	    	        ]
+            	    	      },
+            	    	      "system": "urn:oid:1.2.36.146.595.217.0.1",
+            	    	      "value": "12345",
+            	    	      "period": {
+            	    	        "start": "2001-05-06"
+            	    	      },
+            	    	      "assigner": {
+            	    	        "display": "Acme Healthcare"
+            	    	      }
+            	    	    }
+            	    	  ],
+            	    	  "active": true,
+            	    	  "name": [
+            	    	    {
+            	    	      "use": "official",
+            	    	      "family": $('#surname').val(),
+            	    	      "given": [
+            	    	    $('#firstName').val()
+            	    	      ]
+            	    	    }
+            	    	   
+            	    	  ],
+            	    	  "telecom": [
+            	    	    
+            	    	    {
+            	    	      "system": "phone",
+            	    	      "value": $('#phoneNumber').val(),
+            	    	      "use": "mobile",
+            	    	      "rank": 1
+            	    	    }
+            	    	  ],
+            	    	  "gender": $('#gender').val(),
+            	    	  "birthDate": $('#dob').val(),
+            	    	  "deceasedBoolean": false,
+            	    	  "address": [
+            	    	    {
+            	    	      "use": "home",
+            	    	      "type": "both",
+            	    	      "text": $('#inputAddress').val(),
+            	    	     
+            	    	      "city": $('#inputCity').val(),
+            	    	      "state": $('#inputState').val(),
+            	    	      "postalCode": $('#inputZip').val(),
+            	    	      "period": {
+            	    	        "start": "1974-12-25"
+            	    	      }
+            	    	    }
+            	    	  ],
+            	    	 
+            	    	}
+ ),
+            	    processData: false,
+            	    success: function(data){
+            	    	loadSearchData();
+            	    },
+            	    error: function( jqXhr, textStatus, errorThrown ){
+            	        console.log( errorThrown );
+            	    }
+            	
+            }); 
+        });
+        });
+        
+        function loadSearchData() {
+        	$.ajax({
+	            type: 'GET',
+	            url: "http://localhost:8080/fhirPOC/fhir/Patient",
+	            dataType:'json',
+	            async : false,
+	            success:function(data){
+	            	var html = '';
+	            	$.each(data.entry, function(key, value) {
+	            		var firstName = "";
+	            		var lastName = "";
+	            		var mobileNumber = "";
+	            		var gender = "";
+	            		var birthdate = "";
+	            		var address = "";
+	            	  var resource = value.resource;
+	            	  var name = resource.name;
+	            	  $.each(name, function(key, value) {
+	            		  lastName = value.family;
+	            		  var given = value.given;
+	            		  $.each(given, function(key, value) {
+	            			  firstName =firstName + value;
+		            	  
+		            		  
+		            	  });
+	            		  
+	            	  });
+	            	  var telecom = resource.telecom;
+	            	  $.each(telecom, function(key, value) {
+	            		  mobileNumber = value.value;
+	            		  
+	            		
+	            		  
+	            	  });
+	            	  gender = resource.gender;
+	            	  birthdate = resource.birthDate;
+	            	  
+	            	  
+	            	  html += '<tr><td>' + lastName + 
+                      '</td><td>' + firstName + 
+                      '</td><td>'+gender+ '</td><td>'
+                      +birthdate+'</td><td>' +
+                      mobileNumber+'</td></tr>' ;
+                      
+  
+	            	});
+	            	 $('#thetable tr').empty();
+	            	 $('#thetable tr').first().after(html);
+
+	            }
+	        });
+        }
+        </script>
+    </body>
+</html>
